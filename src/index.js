@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import { render } from "react-dom";
 import * as OnfidoSDK from "onfido-sdk-ui/dist/onfido.min.js";
 import "onfido-sdk-ui/dist/style.css";
-import  axios  from "axios";
+import axios from "axios";
+var Onfidoss = require('onfido-sdk-ui')
 
-let onfidoToken ;
+let onfidoToken;
 const onfidoContainerId = "onfido-sdk-wrapper";
 
 const Onfido = () => {
@@ -19,15 +20,19 @@ const Onfido = () => {
     applicant_id: '24120550-81d0-40e5-bab1-90c93bedb3a6',
     referrer: `${window.location.origin}/`,
   };
-  useEffect(() => { 
-     axios.post(`/sdk_token`, obj2, config).then((res) => {
-      onfidoToken=res.data.token
-    if (onfidoToken)
-      OnfidoSDK.init({
-        token: onfidoToken,
-        containerId: 'onfido-sdk-wrapper'
-      });
-  })}, []);
+  useEffect(() => {
+    axios.post(`/sdk_token`, obj2, config).then((res) => {
+      console.log(res, "resss");
+      onfidoToken = res.data.token
+      if (onfidoToken)
+        Onfidoss.init({
+          token: onfidoToken,
+          containerId: 'onfido-sdk-wrapper'
+        });
+    }).catch((err) => {
+      console.log(err, "sdk err");
+    })
+  }, []);
 
   return <div id='onfido-sdk-wrapper' />;
 };
